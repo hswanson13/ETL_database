@@ -68,7 +68,7 @@ try:
             
             #get all the column names
             columns = get_column_names(the_table)
-            
+            print(columns)
             input_data = []
             for col in columns:
                 if col[0] == 'module_serial_number':
