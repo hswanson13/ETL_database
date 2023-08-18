@@ -11,14 +11,10 @@ try:
         
         with connection.cursor() as cursor:
 
-            db_relations = open("ETL_database.sql","r").read()
-            print(db_relations)
+            db_relations = open("ETLdb.pgsql","r").read()
+            #print(db_relations)
             cursor.execute(db_relations)
             connection.commit()
-
-            #to see if it works go into postgresql
-            #and do the command:
-            # \dt+
 
 except Error as e:
     print(e)
