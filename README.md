@@ -24,10 +24,8 @@ cd ETL_database
 
 Install packages for the repository so make sure you are in it:
 I would also recommend you setting up your own virtual environment
-#uses python=3.11.4
-
-#this gets you the ETL command line interface entry point
-1. pip install --editable .
+#uses python=3.11.4, should come with click if not the version is in the requirements file
+1. pip install psycopg2
 2. python test_db_connection.py
 
 If this says you successfully connected to the database you are good to go!
