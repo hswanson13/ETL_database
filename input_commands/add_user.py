@@ -45,6 +45,8 @@ try:
                 cursor.execute(add_data_query,tup_input_data)
                 return
             
+            
+            
             #get all the column names
             columns = get_column_names(the_table)
             

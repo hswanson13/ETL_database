@@ -16,8 +16,6 @@ try:
         
         with connection.cursor() as cursor:
 
-            the_table = 'module'
-
             def get_column_names(table):
                 #get all the column names
                 column_names_query = f"""
@@ -47,7 +45,25 @@ try:
                 cursor.execute(add_data_query,tup_input_data)
                 return
             
+            def find_id(table,column): #unique column!
+                columnFound = False
+                while columnFound == False:
+                    column_input = input(f'Input {column}: ')
+
+                    find_id_query = f'SELECT "id" FROM "{table}" WHERE {column}=%s'
+                    cursor.execute(find_id_query,(column_input,))
+                    id = cursor.fetchall()
+
+                    if len(id) == 0:
+                        print(f"{column_input} does not exist in database, try again")
+                        continue
+                    else:
+                        columnFound = True
+                
+                return id[0][0] #integer!
+            
             def check_serial_number(table,serial_column):
+                #takes input serial number and checks it is doesn't excist already!
                 unique = False
                 while unique == False:
 
@@ -65,21 +81,33 @@ try:
                         print("component already exists, try again")
                     
                 return test_serial
+
+            the_table = 'component'
             
             #get all the column names
             columns = get_column_names(the_table)
             
+            #get user data
             input_data = []
-            for col in columns:
-                if col[0] == 'module_serial_number':
+            for col in columns: #loop is silly but gets input_data list in the same order so the data matches column name
+                if col[0] == 'component_serial_number':
                     #make sure that inputted serial number doesn't already exist!
-                    input_data.append(check_serial_number(the_table,col[0]))
+                    input_data.append(check_serial_number(the_table,'component_serial_number'))
+                    continue
+                
+                elif col[0] == 'module_id':
+                    input_data.append(find_id('module','module_serial_number')) #read like find the id for the module with this module_serial_number
+                    continue
+
+                elif col[0] == 'component_type_id':
+                    input_data.append(find_id('component_type_lookup','component_name'))
                     continue
 
                 user_input = input(f"Input {col[0]} ({col[1]}): ")
                 input_data.append(user_input)
 
-            add_data(the_table,columns,input_data,)
+            add_data(the_table,columns,input_data)
+
 
 except Error as e:
     print(e)
