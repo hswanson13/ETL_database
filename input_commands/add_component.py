@@ -24,8 +24,9 @@ try:
             #get all the column names
             columns = get_column_names(the_table,cursor)
 
-            #need thing where you can't put the same component on multiple modules!
+            #could add constraint that it checks to see if module_id is already "full" meaning it has all the components already in database!
             module_id = find_id('module','module_serial_number',cursor)
+            
             component_type_id = find_id('component_type_lookup','component_name',cursor)
             location = input('What site is this component at/going to be at? ')
             component_serial_num = check_serial_number(the_table,'component_serial_number',cursor) #checks to make sure serial number doesn't already exist
