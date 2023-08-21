@@ -1,6 +1,7 @@
 from getpass import getpass
 import psycopg2
 from psycopg2 import Error, connect
+from common_functions import get_user
 
 #uses python code to kind of dynamically get information and names
 #probably not the best way, for future commands it will all be hard coded :)
@@ -17,30 +18,15 @@ try:
         with connection.cursor() as cursor:
             the_table = 'user'
             
-            accountFound = False
-            while accountFound == False:
-            #check username and password and make sure they are correct
-                username = input('Input username: ')
-                password = input('Input password: ') #should use getpass but for now it is fine
+            user_id = get_user(cursor)
 
-                validate_user_query = f'SELECT username, password FROM "user" WHERE username=%s AND password=%s'
-                cursor.execute(validate_user_query, (username,password))
-
-                account = cursor.fetchall() #if empty then they typed wrong password or username
-
-                if len(account) == 0:
-                    print("username or password incorrect")
-                    continue
-                else:
-                    accountFound=True
-
-            grab_curr_status_query = 'SELECT active_user FROM "user" WHERE username=%s'
-            cursor.execute(grab_curr_status_query, (username,))
+            grab_curr_status_query = 'SELECT active_user FROM "user" WHERE "id"=%s'
+            cursor.execute(grab_curr_status_query, (user_id,))
             curr_status = cursor.fetchall()[0][0]
 
             #could add thing so it grabs the current and sets it to the opposite
-            toggle_account_activation_query = 'UPDATE "user" SET active_user=%s WHERE username=%s'
-            cursor.execute(toggle_account_activation_query,(not curr_status,username))
+            toggle_account_activation_query = 'UPDATE "user" SET active_user=%s WHERE "id"=%s'
+            cursor.execute(toggle_account_activation_query,(not curr_status,user_id)) #not curr_status flips activation
 
 except Error as e:
     print(e)
